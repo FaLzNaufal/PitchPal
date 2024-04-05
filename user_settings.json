@@ -1,0 +1,9 @@
+{
+  "sample_freq": 44100,
+  "window_size": 44100,
+  "window_step": 2756,
+  "num_hps": 7,
+  "power_thresh": 1e-06,
+  "concert_pitch": 440,
+  "white_noise_thresh": 0.1
+}

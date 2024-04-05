@@ -4,15 +4,17 @@ import numpy as np
 import scipy.fftpack
 import sounddevice as sd
 import time
+import json
 
 # General settings that can be changed by the user
-SAMPLE_FREQ = 48000 # sample frequency in Hz
-WINDOW_SIZE = 48000 # window size of the DFT in samples
-WINDOW_STEP = 12000 # step size of window
-NUM_HPS = 5 # max number of harmonic product spectrums
-POWER_THRESH = 1e-6 # tuning is activated if the signal power exceeds this threshold
-CONCERT_PITCH = 440 # defining a1
-WHITE_NOISE_THRESH = 0.2 # everything under WHITE_NOISE_THRESH*avg_energy_per_freq is cut off
+user_settings = json.load(open("user_settings.json", "r"))
+SAMPLE_FREQ = user_settings["sample_freq"] # sample frequency in Hz
+WINDOW_SIZE = user_settings["window_size"] # window size of the DFT in samples
+WINDOW_STEP = user_settings["window_step"] # step size of window
+NUM_HPS = user_settings["num_hps"] # max number of harmonic product spectrums
+POWER_THRESH = user_settings["power_thresh"] # tuning is activated if the signal power exceeds this threshold
+CONCERT_PITCH = user_settings["concert_pitch"] # defining a1
+WHITE_NOISE_THRESH = user_settings["white_noise_thresh"] # everything under WHITE_NOISE_THRESH*avg_energy_per_freq is cut off
 
 WINDOW_T_LEN = WINDOW_SIZE / SAMPLE_FREQ # length of the window in seconds
 SAMPLE_T_LENGTH = 1 / SAMPLE_FREQ # length between two samples in seconds
