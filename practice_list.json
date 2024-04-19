@@ -1,0 +1,119 @@
+[
+  {
+    "name": "C Major Scale",
+    "description": "Practice the C Major Scale",
+    "note_list": [
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "A4",
+        "alternate_name": "A4"
+      },
+      {
+        "note": "B4",
+        "alternate_name": "B4"
+      },
+      {
+        "note": "C5",
+        "alternate_name": "C5"
+      }
+    ],
+    "is_random": "false"
+  },
+  {
+    "name": "D Major Scale",
+    "description": "Practice the D Major Scale",
+    "note_list": [
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F#4",
+        "alternate_name": "F#4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "A4",
+        "alternate_name": "A4"
+      },
+      {
+        "note": "B4",
+        "alternate_name": "B4"
+      },
+      {
+        "note": "C#5",
+        "alternate_name": "C#5"
+      },
+      {
+        "note": "D5",
+        "alternate_name": "D5"
+      }
+    ],
+    "is_random": "false"
+  },
+  {
+    "name": "C Major Scale Alternate",
+    "description": "Practice the C Major Scale randomized with the note order as their alternate names (e.g. C4 = 1)",
+    "note_list": [
+      {
+        "note": "C4",
+        "alternate_name": "1"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "2"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "3"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "5"
+      },
+      {
+        "note": "A4",
+        "alternate_name": "6"
+      },
+      {
+        "note": "B4",
+        "alternate_name": "7"
+      },
+      {
+        "note": "C5",
+        "alternate_name": "8"
+      }
+    ],
+    "is_random": "true"
+  }
+]

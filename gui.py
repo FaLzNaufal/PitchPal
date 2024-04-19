@@ -4,7 +4,7 @@ import tkinter as tk
 import soundfile as sf
 import pitch_detection as pd
 from tkinter import *
-from tkinter import font
+from tkinter import font, ttk
 from threading import Thread, Event
 import json
 import os
@@ -92,7 +92,7 @@ class App(tk.Tk):
 
         # frames
         self.frames = {}
-        for F in (HomePage, PracticePage, SettingsPage):
+        for F in (HomePage, PracticePage, SettingsPage, PracticeListPage):
             frame = F(container, self)
             self.frames[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -125,7 +125,7 @@ class HomePage(tk.Frame):
 
         # buttons
         start_button = Button(self.container, width=20,
-                            command=lambda: controller.show_frame("PracticePage"),
+                            command=lambda: controller.show_frame("PracticeListPage"),
                             text="Start Practice", bg="#2d2d30", fg="white")
         start_button.grid(row=2, column=0, sticky=NS)
 
@@ -281,6 +281,53 @@ class PracticePage(tk.Frame):
                          command=stop_button_clicked,
                          text="Stop", bg="#2d2d30", fg="white")
         stop_button.grid(row=8, column=0, sticky=NS, columnspan=3, pady=(10, 0))
+
+class PracticeListPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        # load practice_list
+        practice_list = json.load(open("practice_list.json", "r"))
+
+        # container
+        self.container = Frame(self)
+        self.container.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.container.configure(bg="#252526")
+
+        # menu-title
+        menu_title = Label(self.container, text="Practice List", font=controller.sub_title_font, bg="#252526", fg="white")
+        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 50), columnspan=2)
+
+        # listbox
+        listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0)
+        for item in practice_list:
+            listbox.insert(END, item.get("name"))
+        listbox.grid(row=2, column=0, sticky=NSEW, columnspan=2)
+
+        # scrollbar
+        scrollbar = Scrollbar(self.container, orient="vertical", command=listbox.yview)
+        scrollbar.grid(row=2, column=1, sticky="nse")
+        listbox.config(yscrollcommand=scrollbar.set)
+
+
+        # buttons
+        start_button = Button(self.container, width=20,
+                         command=lambda: controller.show_frame("PracticePage"),
+                         text="Start", bg="#2d2d30", fg="white", state=DISABLED)
+        start_button.grid(row=3, column=0, sticky=NS, pady=(50, 0))
+
+
+        modify_button = Button(self.container, width=20,
+                         command=lambda: print("Modify"),
+                         text="Modify", bg="#2d2d30", fg="white", state=DISABLED)
+        modify_button.grid(row=3, column=1, sticky=NS, pady=(50, 0), padx=(10, 0))
+
+        def enable_buttons(event):
+            start_button.config(state=NORMAL)
+            modify_button.config(state=NORMAL)
+        listbox.bind('<<ListboxSelect>>', enable_buttons)
+
 
 # functions
 def start_button_clicked():
