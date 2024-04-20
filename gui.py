@@ -13,6 +13,8 @@ import sys
 # variables
 target_notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]
 current_target_note = 0
+current_practice = None
+practice_list = []
 
 class StreamThread(Thread):
     def __init__(self):
@@ -69,20 +71,19 @@ class App(tk.Tk):
         self.minsize(500, 500)
 
         # fonts
-        default_font = font.nametofont("TkDefaultFont")
+        self.default_font = font.nametofont("TkDefaultFont")
 
-        self.notes_font = default_font.copy()
+        self.notes_font = self.default_font.copy()
         self.notes_font.configure(size=36)
 
-        self.preview_notes_font = default_font.copy()
+        self.preview_notes_font = self.default_font.copy()
         self.preview_notes_font.configure(size=24)
 
-        self.title_font = default_font.copy()
+        self.title_font = self.default_font.copy()
         self.title_font.configure(size=24, weight="bold")
 
-        self.sub_title_font = default_font.copy()
+        self.sub_title_font = self.default_font.copy()
         self.sub_title_font.configure(size=18)
-
 
         # container
         container = Frame(self)
@@ -92,7 +93,7 @@ class App(tk.Tk):
 
         # frames
         self.frames = {}
-        for F in (HomePage, PracticePage, SettingsPage, PracticeListPage):
+        for F in (HomePage, PracticePage, SettingsPage, PracticeListPage, PracticeSettingsPage):
             frame = F(container, self)
             self.frames[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -103,7 +104,14 @@ class App(tk.Tk):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
-
+        match page_name:
+            case "PracticeListPage":
+                load_practice_list()
+            case "PracticeSettingsPage":
+                if current_practice:
+                    frame.fill_form()
+                else:
+                    frame.clear_form()
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -209,12 +217,12 @@ class SettingsPage(tk.Frame):
         save_button = Button(self.container, width=20,
                             command=lambda: self.save_settings(sample_freq_entry, window_size_entry, window_step_entry, num_hps_entry, power_thresh_entry, concert_pitch_entry, white_noise_thresh_entry),
                             text="Save & Restart", bg="#2d2d30", fg="white")
-        save_button.grid(row=9, column=0, sticky=SW, pady=(50, 0))
+        save_button.grid(row=9, column=0, sticky=SW, pady=(30, 0))
 
         back_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("HomePage"),
                             text="Back", bg="#2d2d30", fg="white")
-        back_button.grid(row=9, column=1, sticky=SE, pady=(50, 0))
+        back_button.grid(row=9, column=1, sticky=SE, pady=(30, 0))
 
         # footer
         info_label = Label(self.container, text="Application must be restarted for changes to take effect", bg="#252526", fg="#adadad")
@@ -240,7 +248,6 @@ class SettingsPage(tk.Frame):
 
         # restart the application
         restart_program()
-
 
 class PracticePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -297,37 +304,147 @@ class PracticeListPage(tk.Frame):
 
         # menu-title
         menu_title = Label(self.container, text="Practice List", font=controller.sub_title_font, bg="#252526", fg="white")
-        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 50), columnspan=2)
+        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 30), columnspan=2)
 
         # listbox
-        listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0)
+        self.listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0)
         for item in practice_list:
-            listbox.insert(END, item.get("name"))
-        listbox.grid(row=2, column=0, sticky=NSEW, columnspan=2)
+            self.listbox.insert(END, item.get("name"))
+        self.listbox.grid(row=3, column=0, sticky=NSEW, columnspan=2)
+
 
         # scrollbar
-        scrollbar = Scrollbar(self.container, orient="vertical", command=listbox.yview)
-        scrollbar.grid(row=2, column=1, sticky="nse")
-        listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar = Scrollbar(self.container, orient="vertical", command=self.listbox.yview)
+        scrollbar.grid(row=3, column=1, sticky="nse")
+        self.listbox.config(yscrollcommand=scrollbar.set)
 
 
         # buttons
-        start_button = Button(self.container, width=20,
+        self.start_button = Button(self.container, width=20,
                          command=lambda: controller.show_frame("PracticePage"),
                          text="Start", bg="#2d2d30", fg="white", state=DISABLED)
-        start_button.grid(row=3, column=0, sticky=NS, pady=(50, 0))
+        self.start_button.grid(row=4, column=0, sticky=NS, pady=(30, 0))
 
 
-        modify_button = Button(self.container, width=20,
-                         command=lambda: print("Modify"),
+        self.modify_button = Button(self.container, width=20,
+                         command=self.on_modify_button_click,
                          text="Modify", bg="#2d2d30", fg="white", state=DISABLED)
-        modify_button.grid(row=3, column=1, sticky=NS, pady=(50, 0), padx=(10, 0))
+        self.modify_button.grid(row=4, column=1, sticky=NS, pady=(30, 0), padx=(10, 0))
 
-        def enable_buttons(event):
-            start_button.config(state=NORMAL)
-            modify_button.config(state=NORMAL)
-        listbox.bind('<<ListboxSelect>>', enable_buttons)
+        new_practice_button = Button(self.container,
+                         command=self.on_new_practice_button_click,
+                         text="+ New Practice", bg="#2d2d30", fg="white")
+        new_practice_button.grid(row=2, column=1, sticky=NE, pady=(0, 10))
 
+        back_button = Button(self.container, width=20,
+                            command=lambda: controller.show_frame("HomePage"),
+                            text="Back", bg="#2d2d30", fg="white")
+        back_button.grid(row=5, column=0, sticky=NSEW, pady=(10, 0), columnspan=2)
+
+        self.listbox.bind('<<ListboxSelect>>', self.enable_buttons)
+
+    def on_modify_button_click(self):
+        global current_practice
+        current_practice = practice_list[self.listbox.curselection()[0]]
+        self.controller.show_frame("PracticeSettingsPage")
+    
+    def on_new_practice_button_click(self):
+        global current_practice
+        current_practice = None
+        self.controller.show_frame("PracticeSettingsPage")
+
+    def enable_buttons(self, event):
+        self.start_button.config(state=NORMAL)
+        self.modify_button.config(state=NORMAL)
+
+class PracticeSettingsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        # container
+        self.container = Frame(self)
+        self.container.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.container.configure(bg="#252526")
+
+        # menu-title
+        menu_title = Label(self.container, text="Practice Settings", font=controller.sub_title_font, bg="#252526", fg="white")
+        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 50), columnspan=2)
+
+        # name
+        name_label = Label(self.container, text="Name: ", bg="#252526", fg="white")
+        name_label.grid(row=2, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+        self.name_entry = Entry(self.container, width=20, bg="#2d2d30", fg="white")
+        self.name_entry.grid(row=2, column=1, sticky=NE, pady=(0, 10))
+
+        # description
+        description_label = Label(self.container, text="Description: ", bg="#252526", fg="white")
+        description_label.grid(row=3, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+        self.description_entry = Entry(self.container, width=20, bg="#2d2d30", fg="white")
+        self.description_entry.grid(row=3, column=1, sticky=NE, pady=(0, 10))
+
+        # target notes
+        target_notes_label = Label(self.container, text="Target Notes: ", bg="#252526", fg="white")
+        target_notes_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+        self.target_notes_entry = Text(self.container, bg="#2d2d30", fg="white", height=2, width=20, font=controller.default_font)
+        self.target_notes_entry.grid(row=5, column=0, pady=(0, 10), columnspan=2, sticky=NSEW)
+
+
+        # alternate names
+        self.has_alternate_names = IntVar()
+        self.has_alternate_names.set(current_practice.get("self.has_alternate_names") if current_practice else 0)
+
+        self.alternate_names_checkbox = Checkbutton(self.container, text="Has Alternate Names", variable=self.has_alternate_names, bg="#252526", fg="white", activebackground="#252526", activeforeground="white", highlightcolor="#252526", selectcolor="#252526")
+        self.alternate_names_checkbox.grid(row=6, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        self.alternate_names_checkbox.config(command=self.on_alternate_names_checkbox_click)
+
+        self.alternate_names_label = Label(self.container, text="Alternate Names: ", bg="#252526", fg="white")
+        self.alternate_names_label.grid(row=7, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+        self.alternate_names_entry = Text(self.container, bg="#2d2d30", fg="white", height=2, width=20, font=controller.default_font)
+        self.alternate_names_entry.grid(row=8, column=0, sticky=NSEW, pady=(0, 10), columnspan=2)
+        if self.has_alternate_names.get() == 0:
+            self.alternate_names_label.grid_remove()
+            self.alternate_names_entry.grid_remove()
+
+        # buttons
+        save_button = Button(self.container, width=20,
+                            command=lambda: print("Save"),
+                            text="Save", bg="#2d2d30", fg="white")
+        save_button.grid(row=9, column=0, sticky=NS, pady=(30, 0), padx=(0, 10))
+
+        back_button = Button(self.container, width=20,
+                            command=lambda: controller.show_frame("PracticeListPage"),
+                            text="Back", bg="#2d2d30", fg="white")
+        back_button.grid(row=9, column=1, sticky=NS, pady=(30, 0))
+
+    def on_alternate_names_checkbox_click(self):
+        # remove alternate names entry if alternate names checkbox is unchecked
+        if self.has_alternate_names.get() == 0:
+            self.alternate_names_label.grid_remove()
+            self.alternate_names_entry.grid_remove()
+        else:
+            self.alternate_names_label.grid()
+            self.alternate_names_entry.grid()
+    
+    def fill_form(self):
+        self.clear_form()
+        self.name_entry.insert(0, current_practice.get("name"))
+        self.description_entry.insert(0, current_practice.get("description"))
+        self.target_notes_entry.insert(1.0, ", ".join([note.get("note") for note in current_practice.get("note_list")]))
+        self.has_alternate_names.set(current_practice.get("has_alternate_names"))
+        self.alternate_names_entry.insert(1.0, ", ".join([note.get("alternate_name") for note in current_practice.get("note_list")]))
+        self.on_alternate_names_checkbox_click()
+    
+    def clear_form(self):
+        self.name_entry.delete(0, END)
+        self.description_entry.delete(0, END)
+        self.target_notes_entry.delete(1.0, END)
+        self.has_alternate_names.set(0)
+        self.alternate_names_entry.delete(1.0, END)
+        self.on_alternate_names_checkbox_click()
 
 # functions
 def start_button_clicked():
@@ -337,6 +454,11 @@ def stop_button_clicked():
     if stream_thread.is_alive():
         stream_thread.terminate()
         stream_thread.join()
+
+def load_practice_list():
+    global practice_list
+    practice_list = json.load(open("practice_list.json", "r"))
+    return practice_list
 
 def restart_program():
     python = sys.executable

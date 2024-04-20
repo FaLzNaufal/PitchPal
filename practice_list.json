@@ -2,6 +2,7 @@
   {
     "name": "C Major Scale",
     "description": "Practice the C Major Scale",
+    "has_alternate_names": 0,
     "note_list": [
       {
         "note": "C4",
@@ -36,11 +37,12 @@
         "alternate_name": "C5"
       }
     ],
-    "is_random": "false"
+    "is_random": 0
   },
   {
     "name": "D Major Scale",
     "description": "Practice the D Major Scale",
+    "has_alternate_names": 0,
     "note_list": [
       {
         "note": "D4",
@@ -75,11 +77,12 @@
         "alternate_name": "D5"
       }
     ],
-    "is_random": "false"
+    "is_random": 0
   },
   {
     "name": "C Major Scale Alternate",
     "description": "Practice the C Major Scale randomized with the note order as their alternate names (e.g. C4 = 1)",
+    "has_alternate_names": 1,
     "note_list": [
       {
         "note": "C4",
@@ -114,6 +117,6 @@
         "alternate_name": "8"
       }
     ],
-    "is_random": "true"
+    "is_random": 1
   }
 ]
