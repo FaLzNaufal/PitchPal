@@ -9,25 +9,27 @@ from threading import Thread, Event
 import json
 import os
 import sys
+import random
 
 # variables
-target_notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]
-current_target_note = 0
+target_notes = []
+alternate_names = []
+current_target_note_idx = 0
 current_practice = None
 practice_list = []
 
 class StreamThread(Thread):
     def __init__(self):
         super().__init__()
-        self.input_device_index = 0
-        self.output_device_index = 4
+        self.input_device_idx = 0
+        self.output_device_idx = 4
 
     def run(self):
         user_settings = json.load(open("user_settings.json", "r"))
         sample_freq = user_settings["sample_freq"]
         window_step = user_settings["window_step"]
         self.event = Event()
-        with sd.Stream(device=(self.input_device_index, self.output_device_index),
+        with sd.Stream(device=(self.input_device_idx, self.output_device_idx),
                         samplerate=sample_freq, blocksize=window_step, 
                         dtype=np.float32, channels=1,
                         callback=lambda indata, outdata, frames, time, status, detection_callback=self.detection_callback:
@@ -39,9 +41,10 @@ class StreamThread(Thread):
         self.event.set() # break self.event.wait()
 
     def detection_callback(self, closest_note):
-        global app
-        global current_target_note
-        global target_notes
+        global app, current_target_note_idx, target_notes, alternate_names, current_practice
+
+        has_alternate_names = current_practice.get("has_alternate_names") if current_practice else False
+        is_random = current_practice.get("is_random") if current_practice else False
 
         if closest_note==None:
             app.input_note.config(fg="white")
@@ -52,12 +55,13 @@ class StreamThread(Thread):
             return
         
         app.input_note.config(text=closest_note)
-        if app.input_note.cget("text") == app.target_note.cget("text"):
+        if target_notes[current_target_note_idx] == closest_note:
             app.input_note.config(fg="green")
-            current_target_note = (current_target_note + 1) % len(target_notes)
-            app.previous_target_note.config(text=target_notes[current_target_note - 1])
-            app.target_note.config(text=target_notes[current_target_note])
-            app.next_target_note.config(text=target_notes[(current_target_note + 1) % len(target_notes)])
+            if is_random:
+                current_target_note_idx = get_random_list_idx(target_notes, current_target_note_idx)
+            else:
+                current_target_note_idx = (current_target_note_idx + 1) % len(target_notes)
+            app.target_note.config(text=target_notes[current_target_note_idx] if not has_alternate_names else alternate_names[current_target_note_idx])
         else:
             app.input_note.config(fg="red")
 
@@ -112,6 +116,8 @@ class App(tk.Tk):
                     frame.fill_form()
                 else:
                     frame.clear_form()
+            case "PracticePage":
+                frame.init_practice()
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -263,13 +269,13 @@ class PracticePage(tk.Frame):
         target_note_label = Label(self.container, text="Target Note: ", bg="#252526", fg="white")
         target_note_label.grid(row=0, column=0, sticky=NSEW, columnspan=3)
 
-        controller.previous_target_note = Label(self.container, text=target_notes[current_target_note - 1], font=controller.preview_notes_font, bg="#252526", fg="grey")
+        controller.previous_target_note = Label(self.container, font=controller.preview_notes_font, bg="#252526", fg="grey")
         controller.previous_target_note.grid(row=1, column=0, sticky=NSEW)
 
-        controller.target_note = Label(self.container, text=target_notes[current_target_note], font=controller.notes_font, bg="#252526", fg="white")
+        controller.target_note = Label(self.container, font=controller.notes_font, bg="#252526", fg="white")
         controller.target_note.grid(row=1, column=1, sticky=NSEW, padx=30)
 
-        controller.next_target_note = Label(self.container, text=target_notes[(current_target_note + 1) % len(target_notes)], font=controller.preview_notes_font, bg="#252526", fg="grey")
+        controller.next_target_note = Label(self.container, font=controller.preview_notes_font, bg="#252526", fg="grey")
         controller.next_target_note.grid(row=1, column=2, sticky=NSEW)
 
         input_note_label = Label(self.container, text="Input Note: ", bg="#252526", fg="white")
@@ -279,15 +285,34 @@ class PracticePage(tk.Frame):
         controller.input_note.grid(row=3, column=0, sticky=NSEW, columnspan=3)
 
         # buttons
-        start_button = Button(self.container, width=20,
-                         command=start_button_clicked,
+        self.start_button = Button(self.container, width=20,
+                         command=self.on_start_button_click,
                          text="Start", bg="#2d2d30", fg="white")
-        start_button.grid(row=7, column=0, sticky=NS, columnspan=3, pady=(50, 0))
+        self.start_button.grid(row=7, column=0, sticky=NS, columnspan=3, pady=(50, 0))
 
-        stop_button = Button(self.container, width=20,
-                         command=stop_button_clicked,
-                         text="Stop", bg="#2d2d30", fg="white")
-        stop_button.grid(row=8, column=0, sticky=NS, columnspan=3, pady=(10, 0))
+        self.stop_button = Button(self.container, width=20,
+                         command=self.on_stop_button_click,
+                         text="Stop", bg="#2d2d30", fg="white", state=DISABLED)
+        self.stop_button.grid(row=8, column=0, sticky=NS, columnspan=3, pady=(10, 0))
+    
+    def on_start_button_click(self):
+        start_stream_thread()
+        self.start_button.config(state=DISABLED)
+        self.stop_button.config(state=NORMAL)
+
+    def on_stop_button_click(self):
+        stop_stream_thread()
+        restart_program()
+
+    def init_practice(self):
+        global current_target_note_idx, target_notes, current_practice, alternate_names
+        has_alternate_names = current_practice.get("has_alternate_names") if current_practice else False
+        if current_practice and current_practice.get("is_random"): # random practice
+            current_target_note_idx = get_random_list_idx(target_notes)
+            self.controller.target_note.config(text=target_notes[current_target_note_idx] if not has_alternate_names else alternate_names[current_target_note_idx])
+        else:
+            current_target_note_idx = 0
+            self.controller.target_note.config(text=target_notes[current_target_note_idx] if not has_alternate_names else alternate_names[current_target_note_idx])
 
 class PracticeListPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -321,7 +346,7 @@ class PracticeListPage(tk.Frame):
 
         # buttons
         self.start_button = Button(self.container, width=20,
-                         command=lambda: controller.show_frame("PracticePage"),
+                         command=self.on_start_button_click,
                          text="Start", bg="#2d2d30", fg="white", state=DISABLED)
         self.start_button.grid(row=4, column=0, sticky=NS, pady=(30, 0))
 
@@ -342,6 +367,13 @@ class PracticeListPage(tk.Frame):
         back_button.grid(row=5, column=0, sticky=NSEW, pady=(10, 0), columnspan=2)
 
         self.listbox.bind('<<ListboxSelect>>', self.enable_buttons)
+
+    def on_start_button_click(self):
+        global current_practice, target_notes, alternate_names
+        current_practice = practice_list[self.listbox.curselection()[0]]
+        target_notes = [note.get("note") for note in current_practice.get("note_list")]
+        alternate_names = [note.get("alternate_name") for note in current_practice.get("note_list")]
+        self.controller.show_frame("PracticePage")
 
     def on_modify_button_click(self):
         global current_practice
@@ -447,10 +479,10 @@ class PracticeSettingsPage(tk.Frame):
         self.on_alternate_names_checkbox_click()
 
 # functions
-def start_button_clicked():
+def start_stream_thread():
     stream_thread.start()
 
-def stop_button_clicked():
+def stop_stream_thread():
     if stream_thread.is_alive():
         stream_thread.terminate()
         stream_thread.join()
@@ -463,6 +495,13 @@ def load_practice_list():
 def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
+
+def get_random_list_idx(list, exclude_idx=None):
+    idx = random.randint(0, len(list)-1)
+    if exclude_idx != None:
+        while idx == exclude_idx: # make sure the new idx is different from the exclude_idx
+            idx = random.randint(0, len(list)-1)
+    return idx
 
 if __name__ == "__main__":
     stream_thread = StreamThread()
