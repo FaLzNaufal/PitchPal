@@ -4,7 +4,7 @@ import tkinter as tk
 import soundfile as sf
 import pitch_detection as pd
 from tkinter import *
-from tkinter import font, ttk
+from tkinter import font, messagebox
 from threading import Thread, Event
 import json
 import os
@@ -150,7 +150,11 @@ class HomePage(tk.Frame):
         settings_button.grid(row=3, column=0, sticky=NS, pady=(10, 0))
 
         about_button = Button(self.container, width=20,
-                            command=lambda: print("About"),
+                            command=lambda: messagebox.showinfo(
+                                "About", "PitchPal is an interactive musical instrument trainer that utilizes Pitch Detection Algorithm. "\
+                                "customize your own practice with your desired notes, give them alternate names, and practice the notes either "\
+                                "in sequential or randomized order. Change the parameters of the Pitch Detection Algorithm (Harmonic Product "\
+                                "Spectrum) to suit your likings in the settings menu. Happy practicing :)"),
                             text="About", bg="#2d2d30", fg="white")
         about_button.grid(row=4, column=0, sticky=NS, pady=(10, 0))
 
@@ -251,7 +255,7 @@ class SettingsPage(tk.Frame):
         with open("user_settings.json", "w") as f:
             json.dump(user_settings, f, indent=2)
 
-        print("Settings saved")
+        messagebox.showinfo("Success", "Settings saved!")
 
         # restart the application
         restart_program()
@@ -389,11 +393,13 @@ class PracticeListPage(tk.Frame):
 
     def on_delete_button_click(self):
         global current_practice, current_practice_idx, practice_list
+        if not messagebox.askyesno("Confirmation", "Are you sure you want to delete \"" + practice_list[self.listbox.curselection()[0]].get("name") + "\"?"):
+            return
         practice_list.pop(self.listbox.curselection()[0])
         with open("practice_list.json", "w") as f:
             json.dump(practice_list, f, indent=2)
-        print("Practice deleted")
         self.refresh_listbox()
+        messagebox.showinfo("Success", "Practice deleted!")
 
     
     def on_new_practice_button_click(self):
@@ -497,13 +503,13 @@ class PracticeSettingsPage(tk.Frame):
         # validate form
         # check if the target notes are in a form of a note followed by an octave number
         target_notes = [note.strip() for note in self.target_notes_entry.get(1.0, END).split(",") if note.strip()]
-        if not all([note[:-1] in pd.ALL_NOTES and note[-1].isdigit() for note in target_notes]):
-            print("Target notes must be in a form of a note followed by an octave number (e.g. A4, G#3, ..)")
+        if not all([(note[0] in pd.ALL_NOTES or note[:2] in pd.ALL_NOTES) and (note[1:].isdigit() or note[2:].isdigit()) for note in target_notes]):
+            messagebox.showerror("Failed to Save", "Target notes must be in a form of a note followed by an octave number (e.g. A4, G#3, ..)")
             return
         # check if alternate names count is not equal to target notes count, ignore empty strings as elements
         alternate_names = [note.strip() for note in self.alternate_names_entry.get(1.0, END).split(",") if note.strip()]
         if self.has_alternate_names.get() and len(target_notes) != len(alternate_names):
-            print("Alternate names count must be equal to target notes count")
+            messagebox.showerror("Failed to Save", "Alternate names count must be equal to target notes count")
             return
         # if alternate names is empty, use target notes as alternate names
         if not self.has_alternate_names.get() or len(alternate_names) == 0:
@@ -523,7 +529,7 @@ class PracticeSettingsPage(tk.Frame):
             practice_list.append(practice)
         with open("practice_list.json", "w") as f:
             json.dump(practice_list, f, indent=2)
-        print("Practice saved")
+        messagebox.showinfo("Success", "Practice saved!")
         self.controller.show_frame("PracticeListPage")
 
     
