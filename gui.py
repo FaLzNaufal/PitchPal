@@ -330,42 +330,47 @@ class PracticeListPage(tk.Frame):
 
         # menu-title
         menu_title = Label(self.container, text="Practice List", font=controller.sub_title_font, bg="#252526", fg="white")
-        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 30), columnspan=2)
+        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 30), columnspan=3)
 
         # listbox
         self.listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0, activestyle="none", font=controller.default_font)
         for item in practice_list:
             self.listbox.insert(END, item.get("name"))
-        self.listbox.grid(row=3, column=0, sticky=NSEW, columnspan=2)
+        self.listbox.grid(row=3, column=0, sticky=NSEW, columnspan=3)
 
 
         # scrollbar
         scrollbar = Scrollbar(self.container, orient="vertical", command=self.listbox.yview)
-        scrollbar.grid(row=3, column=1, sticky="nse")
+        scrollbar.grid(row=3, column=2, sticky="nse")
         self.listbox.config(yscrollcommand=scrollbar.set)
 
 
         # buttons
-        self.start_button = Button(self.container, width=20,
+        self.start_button = Button(self.container, width=12,
                          command=self.on_start_button_click,
                          text="Start", bg="#2d2d30", fg="white", state=DISABLED)
-        self.start_button.grid(row=4, column=0, sticky=NS, pady=(30, 0))
+        self.start_button.grid(row=4, column=0, sticky=NSEW, pady=(30, 0))
 
 
-        self.modify_button = Button(self.container, width=20,
+        self.modify_button = Button(self.container, width=12,
                          command=self.on_modify_button_click,
                          text="Modify", bg="#2d2d30", fg="white", state=DISABLED)
-        self.modify_button.grid(row=4, column=1, sticky=NS, pady=(30, 0), padx=(10, 0))
+        self.modify_button.grid(row=4, column=1, sticky=NSEW, pady=(30, 0), padx=(10, 0))
+
+        self.delete_button = Button(self.container, width=12,
+                            command=self.on_delete_button_click,
+                            text="Delete", bg="#2d2d30", fg="white", state=DISABLED)
+        self.delete_button.grid(row=4, column=2, sticky=NSEW, pady=(30, 0), padx=(10, 0))
 
         new_practice_button = Button(self.container,
                          command=self.on_new_practice_button_click,
-                         text="+ New Practice", bg="#2d2d30", fg="white")
-        new_practice_button.grid(row=2, column=1, sticky=NE, pady=(0, 10))
+                         text="+ New Practice", bg="#2d2d30", fg="white", width=12)
+        new_practice_button.grid(row=2, column=2, sticky=NE, pady=(0, 10))
 
         back_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("HomePage"),
                             text="Back", bg="#2d2d30", fg="white")
-        back_button.grid(row=5, column=0, sticky=NSEW, pady=(10, 0), columnspan=2)
+        back_button.grid(row=5, column=0, sticky=NSEW, pady=(10, 0), columnspan=3)
 
         self.listbox.bind('<<ListboxSelect>>', self.enable_buttons)
 
@@ -381,6 +386,15 @@ class PracticeListPage(tk.Frame):
         current_practice_idx = self.listbox.curselection()[0]
         current_practice = practice_list[current_practice_idx]
         self.controller.show_frame("PracticeSettingsPage")
+
+    def on_delete_button_click(self):
+        global current_practice, current_practice_idx, practice_list
+        practice_list.pop(self.listbox.curselection()[0])
+        with open("practice_list.json", "w") as f:
+            json.dump(practice_list, f, indent=2)
+        print("Practice deleted")
+        self.refresh_listbox()
+
     
     def on_new_practice_button_click(self):
         global current_practice, current_practice_idx, practice_list
@@ -391,6 +405,7 @@ class PracticeListPage(tk.Frame):
     def enable_buttons(self, event):
         self.start_button.config(state=NORMAL)
         self.modify_button.config(state=NORMAL)
+        self.delete_button.config(state=NORMAL)
     
     def refresh_listbox(self):
         global practice_list
@@ -400,6 +415,7 @@ class PracticeListPage(tk.Frame):
             self.listbox.insert(END, item.get("name"))
         self.start_button.config(state=DISABLED)
         self.modify_button.config(state=DISABLED)
+        self.delete_button.config(state=DISABLED)
 
 class PracticeSettingsPage(tk.Frame):
     def __init__(self, parent, controller):
