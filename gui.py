@@ -16,6 +16,7 @@ target_notes = []
 alternate_names = []
 current_target_note_idx = 0
 current_practice = None
+current_practice_idx = None
 practice_list = []
 
 class StreamThread(Thread):
@@ -110,7 +111,7 @@ class App(tk.Tk):
         frame.tkraise()
         match page_name:
             case "PracticeListPage":
-                load_practice_list()
+                frame.refresh_listbox()
             case "PracticeSettingsPage":
                 if current_practice:
                     frame.fill_form()
@@ -332,7 +333,7 @@ class PracticeListPage(tk.Frame):
         menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 30), columnspan=2)
 
         # listbox
-        self.listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0)
+        self.listbox = Listbox(self.container, bg="#2d2d30", fg="white", selectbackground="#3d3d3d", borderwidth=0, highlightthickness=0, activestyle="none", font=controller.default_font)
         for item in practice_list:
             self.listbox.insert(END, item.get("name"))
         self.listbox.grid(row=3, column=0, sticky=NSEW, columnspan=2)
@@ -376,18 +377,29 @@ class PracticeListPage(tk.Frame):
         self.controller.show_frame("PracticePage")
 
     def on_modify_button_click(self):
-        global current_practice
-        current_practice = practice_list[self.listbox.curselection()[0]]
+        global current_practice, current_practice_idx
+        current_practice_idx = self.listbox.curselection()[0]
+        current_practice = practice_list[current_practice_idx]
         self.controller.show_frame("PracticeSettingsPage")
     
     def on_new_practice_button_click(self):
-        global current_practice
+        global current_practice, current_practice_idx, practice_list
         current_practice = None
+        current_practice_idx = len(practice_list)
         self.controller.show_frame("PracticeSettingsPage")
 
     def enable_buttons(self, event):
         self.start_button.config(state=NORMAL)
         self.modify_button.config(state=NORMAL)
+    
+    def refresh_listbox(self):
+        global practice_list
+        practice_list = json.load(open("practice_list.json", "r"))
+        self.listbox.delete(0, END)
+        for item in practice_list:
+            self.listbox.insert(END, item.get("name"))
+        self.start_button.config(state=DISABLED)
+        self.modify_button.config(state=DISABLED)
 
 class PracticeSettingsPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -426,8 +438,6 @@ class PracticeSettingsPage(tk.Frame):
 
         # alternate names
         self.has_alternate_names = IntVar()
-        self.has_alternate_names.set(current_practice.get("self.has_alternate_names") if current_practice else 0)
-
         self.alternate_names_checkbox = Checkbutton(self.container, text="Has Alternate Names", variable=self.has_alternate_names, bg="#252526", fg="white", activebackground="#252526", activeforeground="white", highlightcolor="#252526", selectcolor="#252526")
         self.alternate_names_checkbox.grid(row=6, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
         self.alternate_names_checkbox.config(command=self.on_alternate_names_checkbox_click)
@@ -441,9 +451,15 @@ class PracticeSettingsPage(tk.Frame):
             self.alternate_names_label.grid_remove()
             self.alternate_names_entry.grid_remove()
 
+        # random
+        self.is_random = IntVar()
+        self.random_checkbox = Checkbutton(self.container, text="Randomize Notes", variable=self.is_random, bg="#252526", fg="white", activebackground="#252526", activeforeground="white", highlightcolor="#252526", selectcolor="#252526")
+        self.random_checkbox.grid(row=6, column=1, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+
         # buttons
         save_button = Button(self.container, width=20,
-                            command=lambda: print("Save"),
+                            command=self.on_save_button_click,
                             text="Save", bg="#2d2d30", fg="white")
         save_button.grid(row=9, column=0, sticky=NS, pady=(30, 0), padx=(0, 10))
 
@@ -461,6 +477,40 @@ class PracticeSettingsPage(tk.Frame):
             self.alternate_names_label.grid()
             self.alternate_names_entry.grid()
     
+    def on_save_button_click(self):
+        # validate form
+        # check if the target notes are in a form of a note followed by an octave number
+        target_notes = [note.strip() for note in self.target_notes_entry.get(1.0, END).split(",") if note.strip()]
+        if not all([note[:-1] in pd.ALL_NOTES and note[-1].isdigit() for note in target_notes]):
+            print("Target notes must be in a form of a note followed by an octave number (e.g. A4, G#3, ..)")
+            return
+        # check if alternate names count is not equal to target notes count, ignore empty strings as elements
+        alternate_names = [note.strip() for note in self.alternate_names_entry.get(1.0, END).split(",") if note.strip()]
+        if self.has_alternate_names.get() and len(target_notes) != len(alternate_names):
+            print("Alternate names count must be equal to target notes count")
+            return
+        # if alternate names is empty, use target notes as alternate names
+        if not self.has_alternate_names.get() or len(alternate_names) == 0:
+            alternate_names = target_notes
+
+        # save practice
+        practice = {
+            "name": self.name_entry.get(),
+            "description": self.description_entry.get(),
+            "note_list": [{"note": target_notes[i], "alternate_name": alternate_names[i]} for i in range(len(target_notes))],
+            "has_alternate_names": self.has_alternate_names.get(),
+            "is_random": self.is_random.get()
+        }
+        if current_practice:
+            practice_list[current_practice_idx] = practice
+        else:
+            practice_list.append(practice)
+        with open("practice_list.json", "w") as f:
+            json.dump(practice_list, f, indent=2)
+        print("Practice saved")
+        self.controller.show_frame("PracticeListPage")
+
+    
     def fill_form(self):
         self.clear_form()
         self.name_entry.insert(0, current_practice.get("name"))
@@ -469,6 +519,7 @@ class PracticeSettingsPage(tk.Frame):
         self.has_alternate_names.set(current_practice.get("has_alternate_names"))
         self.alternate_names_entry.insert(1.0, ", ".join([note.get("alternate_name") for note in current_practice.get("note_list")]))
         self.on_alternate_names_checkbox_click()
+        self.is_random.set(current_practice.get("is_random"))
     
     def clear_form(self):
         self.name_entry.delete(0, END)
@@ -486,11 +537,6 @@ def stop_stream_thread():
     if stream_thread.is_alive():
         stream_thread.terminate()
         stream_thread.join()
-
-def load_practice_list():
-    global practice_list
-    practice_list = json.load(open("practice_list.json", "r"))
-    return practice_list
 
 def restart_program():
     python = sys.executable

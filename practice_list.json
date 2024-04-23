@@ -2,7 +2,6 @@
   {
     "name": "C Major Scale",
     "description": "Practice the C Major Scale",
-    "has_alternate_names": 0,
     "note_list": [
       {
         "note": "C4",
@@ -37,12 +36,12 @@
         "alternate_name": "C5"
       }
     ],
+    "has_alternate_names": 0,
     "is_random": 0
   },
   {
     "name": "D Major Scale",
     "description": "Practice the D Major Scale",
-    "has_alternate_names": 0,
     "note_list": [
       {
         "note": "D4",
@@ -77,46 +76,47 @@
         "alternate_name": "D5"
       }
     ],
+    "has_alternate_names": 0,
     "is_random": 0
   },
   {
     "name": "C Major Scale Alternate",
     "description": "Practice the C Major Scale randomized with the note order as their alternate names (e.g. C4 = 1)",
-    "has_alternate_names": 1,
     "note_list": [
       {
         "note": "C4",
-        "alternate_name": "1"
+        "alternate_name": "Do"
       },
       {
         "note": "D4",
-        "alternate_name": "2"
+        "alternate_name": "Re"
       },
       {
         "note": "E4",
-        "alternate_name": "3"
+        "alternate_name": "Mi"
       },
       {
         "note": "F4",
-        "alternate_name": "4"
+        "alternate_name": "Fa"
       },
       {
         "note": "G4",
-        "alternate_name": "5"
+        "alternate_name": "Sol"
       },
       {
         "note": "A4",
-        "alternate_name": "6"
+        "alternate_name": "La"
       },
       {
         "note": "B4",
-        "alternate_name": "7"
+        "alternate_name": "Si"
       },
       {
         "note": "C5",
-        "alternate_name": "8"
+        "alternate_name": "Do'"
       }
     ],
+    "has_alternate_names": 1,
     "is_random": 1
   }
 ]
