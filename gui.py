@@ -270,35 +270,42 @@ class PracticePage(tk.Frame):
         self.container.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.container.configure(bg="#252526")
 
+        # title
+        self.title_label = Label(self.container, text="Practice", font=controller.sub_title_font, bg="#252526", fg="white")
+        self.title_label.grid(row=0, column=0, pady=(0, 10), columnspan=2, sticky=NSEW)
+
+        # description
+        self.description_label = Label(self.container, text="Practice your notes!", bg="#252526", fg="#adadad", wraplength=260, height=2, anchor=N)
+        self.description_label.grid(row=1, column=0, columnspan=2, pady=(0, 30), sticky=NSEW)
+
         # notes
         target_note_label = Label(self.container, text="Target Note: ", bg="#252526", fg="white")
-        target_note_label.grid(row=0, column=0, sticky=NSEW, columnspan=3)
-
-        controller.previous_target_note = Label(self.container, font=controller.preview_notes_font, bg="#252526", fg="grey")
-        controller.previous_target_note.grid(row=1, column=0, sticky=NSEW)
+        target_note_label.grid(row=2, column=0, sticky=NSEW, columnspan=3)
 
         controller.target_note = Label(self.container, font=controller.notes_font, bg="#252526", fg="white")
-        controller.target_note.grid(row=1, column=1, sticky=NSEW, padx=30)
-
-        controller.next_target_note = Label(self.container, font=controller.preview_notes_font, bg="#252526", fg="grey")
-        controller.next_target_note.grid(row=1, column=2, sticky=NSEW)
+        controller.target_note.grid(row=3, column=0, sticky=NSEW, columnspan=2)
 
         input_note_label = Label(self.container, text="Input Note: ", bg="#252526", fg="white")
-        input_note_label.grid(row=2, column=0, sticky=NSEW, columnspan=3, pady=(50, 0))
+        input_note_label.grid(row=4, column=0, sticky=NSEW, columnspan=3, pady=(30, 0))
 
         controller.input_note = Label(self.container, text="...", font=controller.notes_font, bg="#252526", fg="white")
-        controller.input_note.grid(row=3, column=0, sticky=NSEW, columnspan=3)
+        controller.input_note.grid(row=5, column=0, sticky=NSEW, columnspan=3)
 
         # buttons
-        self.start_button = Button(self.container, width=20,
-                         command=self.on_start_button_click,
-                         text="Start", bg="#2d2d30", fg="white")
-        self.start_button.grid(row=7, column=0, sticky=NS, columnspan=3, pady=(50, 0))
+        self.start_button = Button(self.container, width=13,
+                            command=self.on_start_button_click,
+                            text="Start", bg="#2d2d30", fg="white")
+        self.start_button.grid(row=6, column=0, sticky=NSEW, pady=(30, 0), padx=(0, 10))
 
-        self.stop_button = Button(self.container, width=20,
-                         command=self.on_stop_button_click,
-                         text="Stop", bg="#2d2d30", fg="white", state=DISABLED)
-        self.stop_button.grid(row=8, column=0, sticky=NS, columnspan=3, pady=(10, 0))
+        self.stop_button = Button(self.container, width=13,
+                            command=self.on_stop_button_click,
+                            text="Stop", bg="#2d2d30", fg="white", state=DISABLED)    
+        self.stop_button.grid(row=6, column=1, sticky=NSEW, pady=(30, 0))
+
+        self.back_button = Button(self.container, width=13,
+                            command=lambda: controller.show_frame("PracticeListPage"),
+                            text="Back", bg="#2d2d30", fg="white")
+        self.back_button.grid(row=7, column=0, sticky=NSEW, pady=(10, 0), columnspan=2)
     
     def on_start_button_click(self):
         start_stream_thread()
@@ -318,6 +325,9 @@ class PracticePage(tk.Frame):
         else:
             current_target_note_idx = 0
             self.controller.target_note.config(text=target_notes[current_target_note_idx] if not has_alternate_names else alternate_names[current_target_note_idx])
+        self.title_label.config(text=current_practice.get("name"))
+        self.description_label.config(text=current_practice.get("description"))
+
 
 class PracticeListPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -351,24 +361,24 @@ class PracticeListPage(tk.Frame):
 
         # buttons
         self.start_button = Button(self.container, width=12,
-                         command=self.on_start_button_click,
-                         text="Start", bg="#2d2d30", fg="white", state=DISABLED)
+                            command=self.on_start_button_click,
+                            text="Start", bg="#2d2d30", fg="white", state=DISABLED)
         self.start_button.grid(row=4, column=0, sticky=NSEW, pady=(30, 0))
 
 
         self.modify_button = Button(self.container, width=12,
-                         command=self.on_modify_button_click,
-                         text="Modify", bg="#2d2d30", fg="white", state=DISABLED)
+                            command=self.on_modify_button_click,
+                            text="Modify", bg="#2d2d30", fg="white", state=DISABLED)
         self.modify_button.grid(row=4, column=1, sticky=NSEW, pady=(30, 0), padx=(10, 0))
 
         self.delete_button = Button(self.container, width=12,
-                            command=self.on_delete_button_click,
-                            text="Delete", bg="#2d2d30", fg="white", state=DISABLED)
+                                command=self.on_delete_button_click,
+                                text="Delete", bg="#2d2d30", fg="white", state=DISABLED)
         self.delete_button.grid(row=4, column=2, sticky=NSEW, pady=(30, 0), padx=(10, 0))
 
         new_practice_button = Button(self.container,
-                         command=self.on_new_practice_button_click,
-                         text="+ New Practice", bg="#2d2d30", fg="white", width=12)
+                            command=self.on_new_practice_button_click,
+                            text="+ New Practice", bg="#2d2d30", fg="white", width=12)
         new_practice_button.grid(row=2, column=2, sticky=NE, pady=(0, 10))
 
         back_button = Button(self.container, width=20,
