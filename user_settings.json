@@ -1,7 +1,7 @@
 {
-  "sample_freq": 44100,
-  "window_size": 44100,
-  "window_step": 2756,
+  "sample_freq": 48000,
+  "window_size": 48000,
+  "window_step": 3000,
   "num_hps": 7,
   "power_thresh": 1e-06,
   "concert_pitch": 440,

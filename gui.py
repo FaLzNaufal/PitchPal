@@ -1,7 +1,6 @@
 import sounddevice as sd
 import numpy as np
 import tkinter as tk
-import soundfile as sf
 import pitch_detection as pd
 from tkinter import *
 from tkinter import font, messagebox
@@ -170,74 +169,79 @@ class SettingsPage(tk.Frame):
 
         # menu-title
         menu_title = Label(self.container, text="Settings", font=controller.sub_title_font, bg="#252526", fg="white")
-        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 50), columnspan=2)
+        menu_title.grid(row=1, column=0, sticky=NSEW, pady=(0, 50), columnspan=3)
 
         # settings
         settings = json.load(open("user_settings.json", "r"))
         
         sample_freq_label = Label(self.container, text="Sample Frequency: ", bg="#252526", fg="white")
-        sample_freq_label.grid(row=2, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        sample_freq_label.grid(row=2, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         sample_freq_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         sample_freq_entry.insert(0, settings["sample_freq"])
-        sample_freq_entry.grid(row=2, column=1, sticky=NE, pady=(0, 10))
+        sample_freq_entry.grid(row=2, column=2, sticky=NE, pady=(0, 10))
 
         window_size_label = Label(self.container, text="Window Size: ", bg="#252526", fg="white")
-        window_size_label.grid(row=3, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        window_size_label.grid(row=3, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         window_size_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         window_size_entry.insert(0, settings["window_size"])
-        window_size_entry.grid(row=3, column=1, sticky=NE, pady=(0, 10))
+        window_size_entry.grid(row=3, column=2, sticky=NE, pady=(0, 10))
 
         window_step_label = Label(self.container, text="Window Step: ", bg="#252526", fg="white")
-        window_step_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        window_step_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         window_step_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         window_step_entry.insert(0, settings["window_step"])
-        window_step_entry.grid(row=4, column=1, sticky=NE, pady=(0, 10))
+        window_step_entry.grid(row=4, column=2, sticky=NE, pady=(0, 10))
 
         num_hps_label = Label(self.container, text="Number of Harmonic Product Spectrum: ", bg="#252526", fg="white")
-        num_hps_label.grid(row=5, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        num_hps_label.grid(row=5, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         num_hps_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         num_hps_entry.insert(0, settings["num_hps"])
-        num_hps_entry.grid(row=5, column=1, sticky=NE, pady=(0, 10))
+        num_hps_entry.grid(row=5, column=2, sticky=NE, pady=(0, 10))
 
         power_thresh_label = Label(self.container, text="Power Threshold: ", bg="#252526", fg="white")
-        power_thresh_label.grid(row=6, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        power_thresh_label.grid(row=6, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         power_thresh_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         power_thresh_entry.insert(0, settings["power_thresh"])
-        power_thresh_entry.grid(row=6, column=1, sticky=NE, pady=(0, 10))
+        power_thresh_entry.grid(row=6, column=2, sticky=NE, pady=(0, 10))
 
         concert_pitch_label = Label(self.container, text="Concert Pitch: ", bg="#252526", fg="white")
-        concert_pitch_label.grid(row=7, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        concert_pitch_label.grid(row=7, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         concert_pitch_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         concert_pitch_entry.insert(0, settings["concert_pitch"])
-        concert_pitch_entry.grid(row=7, column=1, sticky=NE, pady=(0, 10))
+        concert_pitch_entry.grid(row=7, column=2, sticky=NE, pady=(0, 10))
 
         white_noise_thresh_label = Label(self.container, text="White Noise Threshold: ", bg="#252526", fg="white")
-        white_noise_thresh_label.grid(row=8, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+        white_noise_thresh_label.grid(row=8, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         white_noise_thresh_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         white_noise_thresh_entry.insert(0, settings["white_noise_thresh"])
-        white_noise_thresh_entry.grid(row=8, column=1, sticky=NE, pady=(0, 10))
+        white_noise_thresh_entry.grid(row=8, column=2, sticky=NE, pady=(0, 10))
 
         # buttons
-        save_button = Button(self.container, width=20,
+        save_button = Button(self.container, width=15,
                             command=lambda: self.save_settings(sample_freq_entry, window_size_entry, window_step_entry, num_hps_entry, power_thresh_entry, concert_pitch_entry, white_noise_thresh_entry),
                             text="Save & Restart", bg="#2d2d30", fg="white")
         save_button.grid(row=9, column=0, sticky=SW, pady=(30, 0))
 
-        back_button = Button(self.container, width=20,
+        reset_button = Button(self.container, width=15,
+                            command=self.reset_settings,
+                            text="Reset to Default", bg="#2d2d30", fg="white")
+        reset_button.grid(row=9, column=1, sticky=SW, pady=(30, 0))
+
+        back_button = Button(self.container, width=15,
                             command=lambda: controller.show_frame("HomePage"),
                             text="Back", bg="#2d2d30", fg="white")
-        back_button.grid(row=9, column=1, sticky=SE, pady=(30, 0))
+        back_button.grid(row=9, column=2, sticky=SE, pady=(30, 0))
 
         # footer
         info_label = Label(self.container, text="Application must be restarted for changes to take effect", bg="#252526", fg="#adadad")
-        info_label.grid(row=10, column=0, sticky=NSEW, columnspan=2, pady=(50, 0))
+        info_label.grid(row=10, column=0, sticky=NSEW, columnspan=3, pady=(50, 0))
 
 
 
@@ -256,6 +260,25 @@ class SettingsPage(tk.Frame):
             json.dump(user_settings, f, indent=2)
 
         messagebox.showinfo("Success", "Settings saved!")
+
+        # restart the application
+        restart_program()
+
+    def reset_settings(self):
+        default_settings = {
+            "sample_freq": 48000,
+            "window_size": 48000,
+            "window_step": 3000,
+            "num_hps": 7,
+            "power_thresh": 1e-6,
+            "concert_pitch": 440,
+            "white_noise_thresh": 0.1
+        }
+
+        with open("user_settings.json", "w") as f:
+            json.dump(default_settings, f, indent=2)
+
+        messagebox.showinfo("Success", "Settings reset to default!")
 
         # restart the application
         restart_program()

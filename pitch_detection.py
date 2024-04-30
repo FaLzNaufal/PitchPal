@@ -2,8 +2,6 @@ import copy
 import os
 import numpy as np
 import scipy.fftpack
-import sounddevice as sd
-import time
 import json
 
 # General settings that can be changed by the user
@@ -49,6 +47,7 @@ def callback(indata, outdata, frames, time, status, detection_callback):
 
   if status:
     print(status)
+    detection_callback(None)
     return
   if any(indata):
     callback.window_samples = np.concatenate((callback.window_samples, indata[:, 0])) # append new samples
