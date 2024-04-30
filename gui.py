@@ -542,6 +542,22 @@ class PracticeSettingsPage(tk.Frame):
     
     def on_save_button_click(self):
         # validate form
+        # check if name is empty
+        if not self.name_entry.get().strip():
+            messagebox.showerror("Failed to Save", "Name cannot be empty")
+            return
+        # check if description is empty
+        if not self.description_entry.get().strip():
+            messagebox.showerror("Failed to Save", "Description cannot be empty")
+            return
+        # check if target notes is empty
+        if not self.target_notes_entry.get(1.0, END).strip():
+            messagebox.showerror("Failed to Save", "Target notes cannot be empty")
+            return
+        # check if alternate names is empty and alternate names checkbox is checked
+        if self.has_alternate_names.get() and not self.alternate_names_entry.get(1.0, END).strip():
+            messagebox.showerror("Failed to Save", "Alternate names cannot be empty")
+            return
         # check if the target notes are in a form of a note followed by an octave number
         target_notes = [note.strip() for note in self.target_notes_entry.get(1.0, END).split(",") if note.strip()]
         if not all([(note[0] in pd.ALL_NOTES or note[:2] in pd.ALL_NOTES) and (note[1:].isdigit() or note[2:].isdigit()) for note in target_notes]):
