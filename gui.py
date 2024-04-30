@@ -140,12 +140,12 @@ class HomePage(tk.Frame):
         # buttons
         start_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("PracticeListPage"),
-                            text="Start Practice", bg="#2d2d30", fg="white")
+                            text="Start Practice", bg="#2d2d30", fg="white", cursor="hand2")
         start_button.grid(row=2, column=0, sticky=NS)
 
         settings_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("SettingsPage"),
-                            text="Settings", bg="#2d2d30", fg="white")
+                            text="Settings", bg="#2d2d30", fg="white", cursor="hand2")
         settings_button.grid(row=3, column=0, sticky=NS, pady=(10, 0))
 
         about_button = Button(self.container, width=20,
@@ -154,7 +154,7 @@ class HomePage(tk.Frame):
                                 "customize your own practice with your desired notes, give them alternate names, and practice the notes either "\
                                 "in sequential or randomized order. Change the parameters of the Pitch Detection Algorithm (Harmonic Product "\
                                 "Spectrum) to suit your likings in the settings menu. Happy practicing :)"),
-                            text="About", bg="#2d2d30", fg="white")
+                            text="About", bg="#2d2d30", fg="white", cursor="hand2")
         about_button.grid(row=4, column=0, sticky=NS, pady=(10, 0))
 
 class SettingsPage(tk.Frame):
@@ -226,17 +226,17 @@ class SettingsPage(tk.Frame):
         # buttons
         save_button = Button(self.container, width=15,
                             command=lambda: self.save_settings(sample_freq_entry, window_size_entry, window_step_entry, num_hps_entry, power_thresh_entry, concert_pitch_entry, white_noise_thresh_entry),
-                            text="Save & Restart", bg="#2d2d30", fg="white")
+                            text="Save & Restart", bg="#2d2d30", fg="white", cursor="hand2")
         save_button.grid(row=9, column=0, sticky=SW, pady=(30, 0))
 
         reset_button = Button(self.container, width=15,
                             command=self.reset_settings,
-                            text="Reset to Default", bg="#2d2d30", fg="white")
+                            text="Reset to Default", bg="#2d2d30", fg="white", cursor="hand2")
         reset_button.grid(row=9, column=1, sticky=SW, pady=(30, 0))
 
         back_button = Button(self.container, width=15,
                             command=lambda: controller.show_frame("HomePage"),
-                            text="Back", bg="#2d2d30", fg="white")
+                            text="Back", bg="#2d2d30", fg="white", cursor="hand2")
         back_button.grid(row=9, column=2, sticky=SE, pady=(30, 0))
 
         # footer
@@ -317,23 +317,23 @@ class PracticePage(tk.Frame):
         # buttons
         self.start_button = Button(self.container, width=13,
                             command=self.on_start_button_click,
-                            text="Start", bg="#2d2d30", fg="white")
+                            text="Start", bg="#2d2d30", fg="white", cursor="hand2")
         self.start_button.grid(row=6, column=0, sticky=NSEW, pady=(30, 0), padx=(0, 10))
 
         self.stop_button = Button(self.container, width=13,
                             command=self.on_stop_button_click,
-                            text="Stop", bg="#2d2d30", fg="white", state=DISABLED)    
+                            text="Stop", bg="#2d2d30", fg="white", state=DISABLED)
         self.stop_button.grid(row=6, column=1, sticky=NSEW, pady=(30, 0))
 
         self.back_button = Button(self.container, width=13,
                             command=lambda: controller.show_frame("PracticeListPage"),
-                            text="Back", bg="#2d2d30", fg="white")
+                            text="Back", bg="#2d2d30", fg="white", cursor="hand2")
         self.back_button.grid(row=7, column=0, sticky=NSEW, pady=(10, 0), columnspan=2)
     
     def on_start_button_click(self):
         start_stream_thread()
-        self.start_button.config(state=DISABLED)
-        self.stop_button.config(state=NORMAL)
+        self.start_button.config(state=DISABLED, cursor="arrow")
+        self.stop_button.config(state=NORMAL, cursor="hand2")
 
     def on_stop_button_click(self):
         stop_stream_thread()
@@ -401,12 +401,12 @@ class PracticeListPage(tk.Frame):
 
         new_practice_button = Button(self.container,
                             command=self.on_new_practice_button_click,
-                            text="+ New Practice", bg="#2d2d30", fg="white", width=12)
+                            text="+ New Practice", bg="#2d2d30", fg="white", width=12, cursor="hand2")
         new_practice_button.grid(row=2, column=2, sticky=NE, pady=(0, 10))
 
         back_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("HomePage"),
-                            text="Back", bg="#2d2d30", fg="white")
+                            text="Back", bg="#2d2d30", fg="white", cursor="hand2")
         back_button.grid(row=5, column=0, sticky=NSEW, pady=(10, 0), columnspan=3)
 
         self.listbox.bind('<<ListboxSelect>>', self.enable_buttons)
@@ -442,9 +442,9 @@ class PracticeListPage(tk.Frame):
         self.controller.show_frame("PracticeSettingsPage")
 
     def enable_buttons(self, event):
-        self.start_button.config(state=NORMAL)
-        self.modify_button.config(state=NORMAL)
-        self.delete_button.config(state=NORMAL)
+        self.start_button.config(state=NORMAL, cursor="hand2")
+        self.modify_button.config(state=NORMAL, cursor="hand2")
+        self.delete_button.config(state=NORMAL, cursor="hand2")
     
     def refresh_listbox(self):
         global practice_list
@@ -452,9 +452,9 @@ class PracticeListPage(tk.Frame):
         self.listbox.delete(0, END)
         for item in practice_list:
             self.listbox.insert(END, item.get("name"))
-        self.start_button.config(state=DISABLED)
-        self.modify_button.config(state=DISABLED)
-        self.delete_button.config(state=DISABLED)
+        self.start_button.config(state=DISABLED, cursor="arrow")
+        self.modify_button.config(state=DISABLED, cursor="arrow")
+        self.delete_button.config(state=DISABLED, cursor="arrow")
 
 class PracticeSettingsPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -487,6 +487,9 @@ class PracticeSettingsPage(tk.Frame):
         target_notes_label = Label(self.container, text="Target Notes: ", bg="#252526", fg="white")
         target_notes_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
 
+        target_notes_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Enter the target notes separated by commas (e.g. A4, G#3, ..)"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        target_notes_info_button.grid(row=4, column=1, sticky=NE, pady=(0, 10))
+
         self.target_notes_entry = Text(self.container, bg="#2d2d30", fg="white", height=2, width=20, font=controller.default_font)
         self.target_notes_entry.grid(row=5, column=0, pady=(0, 10), columnspan=2, sticky=NSEW)
 
@@ -499,6 +502,9 @@ class PracticeSettingsPage(tk.Frame):
 
         self.alternate_names_label = Label(self.container, text="Alternate Names: ", bg="#252526", fg="white")
         self.alternate_names_label.grid(row=7, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
+
+        self.alternate_names_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Enter the alternate names separated by commas (e.g. Do, Re, ..) with the same order as the target notes. The total count of alternate names must be equal to the target notes count."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        self.alternate_names_info_button.grid(row=7, column=1, sticky=NE, pady=(0, 10))
 
         self.alternate_names_entry = Text(self.container, bg="#2d2d30", fg="white", height=2, width=20, font=controller.default_font)
         self.alternate_names_entry.grid(row=8, column=0, sticky=NSEW, pady=(0, 10), columnspan=2)
@@ -515,21 +521,23 @@ class PracticeSettingsPage(tk.Frame):
         # buttons
         save_button = Button(self.container, width=20,
                             command=self.on_save_button_click,
-                            text="Save", bg="#2d2d30", fg="white")
+                            text="Save", bg="#2d2d30", fg="white", cursor="hand2")
         save_button.grid(row=9, column=0, sticky=NS, pady=(30, 0), padx=(0, 10))
 
         back_button = Button(self.container, width=20,
                             command=lambda: controller.show_frame("PracticeListPage"),
-                            text="Back", bg="#2d2d30", fg="white")
+                            text="Back", bg="#2d2d30", fg="white", cursor="hand2")
         back_button.grid(row=9, column=1, sticky=NS, pady=(30, 0))
 
     def on_alternate_names_checkbox_click(self):
         # remove alternate names entry if alternate names checkbox is unchecked
         if self.has_alternate_names.get() == 0:
             self.alternate_names_label.grid_remove()
+            self.alternate_names_info_button.grid_remove()
             self.alternate_names_entry.grid_remove()
         else:
             self.alternate_names_label.grid()
+            self.alternate_names_info_button.grid()
             self.alternate_names_entry.grid()
     
     def on_save_button_click(self):
