@@ -21,16 +21,13 @@ practice_list = []
 class StreamThread(Thread):
     def __init__(self):
         super().__init__()
-        self.input_device_idx = 0
-        self.output_device_idx = 4
 
     def run(self):
         user_settings = json.load(open("user_settings.json", "r"))
         sample_freq = user_settings["sample_freq"]
         window_step = user_settings["window_step"]
         self.event = Event()
-        with sd.Stream(device=(self.input_device_idx, self.output_device_idx),
-                        samplerate=sample_freq, blocksize=window_step, 
+        with sd.Stream(samplerate=sample_freq, blocksize=window_step, 
                         dtype=np.float32, channels=1,
                         callback=lambda indata, outdata, frames, time, status, detection_callback=self.detection_callback:
                         pd.callback(indata, outdata, frames, time, status, detection_callback)) as self.stream:
