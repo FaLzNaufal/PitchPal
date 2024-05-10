@@ -264,23 +264,30 @@ class SettingsPage(tk.Frame):
 
 
     def save_settings(self, sample_freq_entry, window_size_entry, window_step_entry, num_hps_entry, power_thresh_entry, concert_pitch_entry, white_noise_thresh_entry):
-        user_settings = {
-            "sample_freq": int(sample_freq_entry.get()),
-            "window_size": int(window_size_entry.get()),
-            "window_step": int(window_step_entry.get()),
-            "num_hps": int(num_hps_entry.get()),
-            "power_thresh": float(power_thresh_entry.get()),
-            "concert_pitch": int(concert_pitch_entry.get()),
-            "white_noise_thresh": float(white_noise_thresh_entry.get())
-        }
+        try:
+            user_settings = {
+                "sample_freq": int(sample_freq_entry.get()),
+                "window_size": int(window_size_entry.get()),
+                "window_step": int(window_step_entry.get()),
+                "num_hps": int(num_hps_entry.get()),
+                "power_thresh": float(power_thresh_entry.get()),
+                "concert_pitch": int(concert_pitch_entry.get()),
+                "white_noise_thresh": float(white_noise_thresh_entry.get())
+            }
 
-        with open("user_settings.json", "w") as f:
-            json.dump(user_settings, f, indent=2)
+            with open("user_settings.json", "w") as f:
+                json.dump(user_settings, f, indent=2)
 
-        messagebox.showinfo("Success", "Settings saved!")
+            messagebox.showinfo("Success", "Settings saved!")
 
-        # restart the application
-        restart_program()
+            # restart the application
+            restart_program()
+
+        except ValueError:
+            messagebox.showerror("Failed to Save", "Please enter valid values")
+
+        except Exception as e:
+            messagebox.showerror("Failed to Save", "An error occurred while saving settings")
 
     def reset_settings(self):
         default_settings = {
@@ -505,7 +512,7 @@ class PracticeSettingsPage(tk.Frame):
         target_notes_label = Label(self.container, text="Target Notes: ", bg="#252526", fg="white")
         target_notes_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20))
 
-        target_notes_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Enter the target notes separated by commas (e.g. A4, G#3, ..)"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        target_notes_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Enter the target notes in capital letter separated by commas (e.g. A4, G#3, ..)"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
         target_notes_info_button.grid(row=4, column=1, sticky=NE, pady=(0, 10))
 
         self.target_notes_entry = Text(self.container, bg="#2d2d30", fg="white", height=2, width=20, font=controller.default_font)
@@ -579,7 +586,7 @@ class PracticeSettingsPage(tk.Frame):
         # check if the target notes are in a form of a note followed by an octave number
         target_notes = [note.strip() for note in self.target_notes_entry.get(1.0, END).split(",") if note.strip()]
         if not all([(note[0] in pd.ALL_NOTES or note[:2] in pd.ALL_NOTES) and (note[1:].isdigit() or note[2:].isdigit()) for note in target_notes]):
-            messagebox.showerror("Failed to Save", "Target notes must be in a form of a note followed by an octave number (e.g. A4, G#3, ..)")
+            messagebox.showerror("Failed to Save", "Target notes must be in a form of a note followed by an octave number (e.g. A4, G#3, ..) and make sure it is in capital letter")
             return
         # check if alternate names count is not equal to target notes count, ignore empty strings as elements
         alternate_names = [note.strip() for note in self.alternate_names_entry.get(1.0, END).split(",") if note.strip()]
