@@ -178,12 +178,18 @@ class SettingsPage(tk.Frame):
         sample_freq_entry.insert(0, settings["sample_freq"])
         sample_freq_entry.grid(row=2, column=2, sticky=NE, pady=(0, 10))
 
+        sample_freq_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "The sample frequency of the input audio. Usually 44100 or 48000 Hz."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        sample_freq_info_button.grid(row=2, column=3, sticky=NE, pady=(0, 10))
+
         window_size_label = Label(self.container, text="Window Size: ", bg="#252526", fg="white")
         window_size_label.grid(row=3, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         window_size_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         window_size_entry.insert(0, settings["window_size"])
         window_size_entry.grid(row=3, column=2, sticky=NE, pady=(0, 10))
+
+        window_size_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "The size of the window for the DFT in samples. Larger values means more samples to process"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        window_size_info_button.grid(row=3, column=3, sticky=NE, pady=(0, 10))
 
         window_step_label = Label(self.container, text="Window Step: ", bg="#252526", fg="white")
         window_step_label.grid(row=4, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
@@ -192,12 +198,18 @@ class SettingsPage(tk.Frame):
         window_step_entry.insert(0, settings["window_step"])
         window_step_entry.grid(row=4, column=2, sticky=NE, pady=(0, 10))
 
+        window_step_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "The step size of the window in samples. Smaller values means faster detection intervals"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        window_step_info_button.grid(row=4, column=3, sticky=NE, pady=(0, 10))
+
         num_hps_label = Label(self.container, text="Number of Harmonic Product Spectrum: ", bg="#252526", fg="white")
         num_hps_label.grid(row=5, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         num_hps_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         num_hps_entry.insert(0, settings["num_hps"])
         num_hps_entry.grid(row=5, column=2, sticky=NE, pady=(0, 10))
+
+        num_hps_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "The maximum number of harmonic product spectrums. Increase this value if you have trouble detecting low notes, decrease if you have trouble detecting high notes. If you are unsure, leave it at 6."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        num_hps_info_button.grid(row=5, column=3, sticky=NE, pady=(0, 10))
 
         power_thresh_label = Label(self.container, text="Power Threshold: ", bg="#252526", fg="white")
         power_thresh_label.grid(row=6, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
@@ -206,6 +218,9 @@ class SettingsPage(tk.Frame):
         power_thresh_entry.insert(0, settings["power_thresh"])
         power_thresh_entry.grid(row=6, column=2, sticky=NE, pady=(0, 10))
 
+        power_thresh_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Tuning is activated if the signal power exceeds this threshold. Increase this value if the tuner is too sensitive, decrease if it is not sensitive enough."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        power_thresh_info_button.grid(row=6, column=3, sticky=NE, pady=(0, 10))
+
         concert_pitch_label = Label(self.container, text="Concert Pitch: ", bg="#252526", fg="white")
         concert_pitch_label.grid(row=7, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
@@ -213,12 +228,18 @@ class SettingsPage(tk.Frame):
         concert_pitch_entry.insert(0, settings["concert_pitch"])
         concert_pitch_entry.grid(row=7, column=2, sticky=NE, pady=(0, 10))
 
+        concert_pitch_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "The concert pitch (A4) frequency in Hz. Set this value to the frequency of A4 in Hz for your instrument."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        concert_pitch_info_button.grid(row=7, column=3, sticky=NE, pady=(0, 10))
+
         white_noise_thresh_label = Label(self.container, text="White Noise Threshold: ", bg="#252526", fg="white")
         white_noise_thresh_label.grid(row=8, column=0, sticky=NW, pady=(0, 10), padx=(0, 20), columnspan=2)
 
         white_noise_thresh_entry = Entry(self.container, width=10, bg="#2d2d30", fg="white")
         white_noise_thresh_entry.insert(0, settings["white_noise_thresh"])
         white_noise_thresh_entry.grid(row=8, column=2, sticky=NE, pady=(0, 10))
+
+        white_noise_thresh_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Threshold for white noise. If you are unsure, leave it at 0.2"), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        white_noise_thresh_info_button.grid(row=8, column=3, sticky=NE, pady=(0, 10))
 
         # buttons
         save_button = Button(self.container, width=15,
@@ -266,10 +287,10 @@ class SettingsPage(tk.Frame):
             "sample_freq": 48000,
             "window_size": 48000,
             "window_step": 3000,
-            "num_hps": 7,
+            "num_hps": 6,
             "power_thresh": 1e-6,
             "concert_pitch": 440,
-            "white_noise_thresh": 0.1
+            "white_noise_thresh": 0.2
         }
 
         with open("user_settings.json", "w") as f:

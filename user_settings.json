@@ -2,8 +2,8 @@
   "sample_freq": 48000,
   "window_size": 48000,
   "window_step": 3000,
-  "num_hps": 7,
+  "num_hps": 6,
   "power_thresh": 1e-06,
   "concert_pitch": 440,
-  "white_noise_thresh": 0.1
+  "white_noise_thresh": 0.2
 }

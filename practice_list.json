@@ -118,5 +118,445 @@
     ],
     "has_alternate_names": 1,
     "is_random": 1
+  },
+  {
+    "name": "All Notes",
+    "description": "Used for testing",
+    "note_list": [
+      {
+        "note": "E2",
+        "alternate_name": "E2"
+      },
+      {
+        "note": "F2",
+        "alternate_name": "F2"
+      },
+      {
+        "note": "F#2",
+        "alternate_name": "F#2"
+      },
+      {
+        "note": "G2",
+        "alternate_name": "G2"
+      },
+      {
+        "note": "G#2",
+        "alternate_name": "G#2"
+      },
+      {
+        "note": "A2",
+        "alternate_name": "A2"
+      },
+      {
+        "note": "A#2",
+        "alternate_name": "A#2"
+      },
+      {
+        "note": "B2",
+        "alternate_name": "B2"
+      },
+      {
+        "note": "C3",
+        "alternate_name": "C3"
+      },
+      {
+        "note": "C#3",
+        "alternate_name": "C#3"
+      },
+      {
+        "note": "D3",
+        "alternate_name": "D3"
+      },
+      {
+        "note": "D#3",
+        "alternate_name": "D#3"
+      },
+      {
+        "note": "E3",
+        "alternate_name": "E3"
+      },
+      {
+        "note": "F3",
+        "alternate_name": "F3"
+      },
+      {
+        "note": "F#3",
+        "alternate_name": "F#3"
+      },
+      {
+        "note": "G3",
+        "alternate_name": "G3"
+      },
+      {
+        "note": "G#3",
+        "alternate_name": "G#3"
+      },
+      {
+        "note": "A3",
+        "alternate_name": "A3"
+      },
+      {
+        "note": "A#3",
+        "alternate_name": "A#3"
+      },
+      {
+        "note": "B3",
+        "alternate_name": "B3"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C#4",
+        "alternate_name": "C#4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "D#4",
+        "alternate_name": "D#4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "F#4",
+        "alternate_name": "F#4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "G#4",
+        "alternate_name": "G#4"
+      },
+      {
+        "note": "A4",
+        "alternate_name": "A4"
+      },
+      {
+        "note": "A#4",
+        "alternate_name": "A#4"
+      },
+      {
+        "note": "B4",
+        "alternate_name": "B4"
+      },
+      {
+        "note": "C5",
+        "alternate_name": "C5"
+      },
+      {
+        "note": "C#5",
+        "alternate_name": "C#5"
+      },
+      {
+        "note": "D5",
+        "alternate_name": "D5"
+      },
+      {
+        "note": "D#5",
+        "alternate_name": "D#5"
+      },
+      {
+        "note": "E5",
+        "alternate_name": "E5"
+      },
+      {
+        "note": "F5",
+        "alternate_name": "F5"
+      },
+      {
+        "note": "F#5",
+        "alternate_name": "F#5"
+      },
+      {
+        "note": "G5",
+        "alternate_name": "G5"
+      },
+      {
+        "note": "G#5",
+        "alternate_name": "G#5"
+      },
+      {
+        "note": "A5",
+        "alternate_name": "A5"
+      },
+      {
+        "note": "A#5",
+        "alternate_name": "A#5"
+      },
+      {
+        "note": "B5",
+        "alternate_name": "B5"
+      }
+    ],
+    "has_alternate_names": 0,
+    "is_random": 0
+  },
+  {
+    "name": "Ode to Joy",
+    "description": "Mainkan lagu Ode to Joy",
+    "note_list": [
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "G3",
+        "alternate_name": "G3"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "G4"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "F4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "E4"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "D4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      },
+      {
+        "note": "C4",
+        "alternate_name": "C4"
+      }
+    ],
+    "has_alternate_names": 0,
+    "is_random": 0
   }
 ]
