@@ -33,3 +33,13 @@ alternatively, you can run the executable file
 3. Modify, Create, or Delete practice sessions as needed
 4. Start a practice session and play the notes displayed on the screen
 5. Get feedback on your note accuracy and improve your skills!
+
+## Musical Notes
+
+The notes used in the practice sessions are based on the 12-tone equal temperament tuning system. These are the notes that can be played in the practice sessions:
+
+```
+C, C#, D, D#, E, F, F#, G, G#, A, A#, B
+```
+
+The program reads notes in the format of `note-octave`, for example `C4` is middle C.
