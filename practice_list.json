@@ -558,5 +558,85 @@
     ],
     "has_alternate_names": 0,
     "is_random": 0
+  },
+  {
+    "name": "Interval dari C4",
+    "description": "Mainkan interval dari C4 untuk not target yang ditunjukkan",
+    "note_list": [
+      {
+        "note": "C4",
+        "alternate_name": "P1"
+      },
+      {
+        "note": "C#4",
+        "alternate_name": "m2"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "M2"
+      },
+      {
+        "note": "D#4",
+        "alternate_name": "m3"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "M3"
+      },
+      {
+        "note": "F4",
+        "alternate_name": "P4"
+      },
+      {
+        "note": "F#4",
+        "alternate_name": "TT"
+      },
+      {
+        "note": "G4",
+        "alternate_name": "P5"
+      },
+      {
+        "note": "G#4",
+        "alternate_name": "m6"
+      },
+      {
+        "note": "A4",
+        "alternate_name": "M6"
+      },
+      {
+        "note": "A#4",
+        "alternate_name": "m7"
+      },
+      {
+        "note": "B4",
+        "alternate_name": "M7"
+      },
+      {
+        "note": "C5",
+        "alternate_name": "P8"
+      }
+    ],
+    "has_alternate_names": 1,
+    "is_random": 0
+  },
+  {
+    "name": "Demo",
+    "description": "Mainkan 3 not",
+    "note_list": [
+      {
+        "note": "C4",
+        "alternate_name": "Do"
+      },
+      {
+        "note": "D4",
+        "alternate_name": "Re"
+      },
+      {
+        "note": "E4",
+        "alternate_name": "Mi"
+      }
+    ],
+    "has_alternate_names": 1,
+    "is_random": 1
   }
 ]

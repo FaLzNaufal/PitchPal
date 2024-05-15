@@ -44,6 +44,8 @@ def callback(indata, outdata, frames, time, status, detection_callback):
     callback.window_samples = [0 for _ in range(WINDOW_SIZE)]
   if not hasattr(callback, "noteBuffer"):
     callback.noteBuffer = ["1","2"]
+  if not hasattr(callback, "is_note_still_playing"):
+    callback.is_note_still_playing = False
 
   if status:
     print(status)
@@ -52,6 +54,19 @@ def callback(indata, outdata, frames, time, status, detection_callback):
   if any(indata):
     callback.window_samples = np.concatenate((callback.window_samples, indata[:, 0])) # append new samples
     callback.window_samples = callback.window_samples[len(indata[:, 0]):] # remove old samples
+
+    # calculate input power
+    input_power = (np.linalg.norm(indata[:, 0], ord=2)**2) / len(indata[:, 0])
+
+    # check if the note is still playing
+    is_new_note = False
+    if input_power > POWER_THRESH:
+        if not callback.is_note_still_playing:
+            callback.is_note_still_playing = True
+            is_new_note = True
+    else:
+        callback.is_note_still_playing = False
+
 
     # skip if signal power is too low
     signal_power = (np.linalg.norm(callback.window_samples, ord=2)**2) / len(callback.window_samples)
@@ -107,7 +122,9 @@ def callback(indata, outdata, frames, time, status, detection_callback):
     os.system('cls' if os.name=='nt' else 'clear')
     if callback.noteBuffer.count(callback.noteBuffer[0]) == len(callback.noteBuffer):
       print(f"Closest note: {closest_note} {max_freq}/{closest_pitch}")
-      detection_callback(closest_note)
+      if is_new_note:
+        print("New note detected")
+      detection_callback(closest_note, is_new_note)
     else:
       print(f"Closest note: ...")
       detection_callback(None)

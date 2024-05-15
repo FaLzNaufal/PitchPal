@@ -37,31 +37,29 @@ class StreamThread(Thread):
         self.stream.abort() # abort the stream processing
         self.event.set() # break self.event.wait()
 
-    def detection_callback(self, closest_note):
+    def detection_callback(self, closest_note, is_new_note=False):
         global app, current_target_note_idx, target_notes, alternate_names, current_practice
 
         has_alternate_names = current_practice.get("has_alternate_names") if current_practice else False
         is_random = current_practice.get("is_random") if current_practice else False
 
         if closest_note==None:
-            app.input_note.config(fg="white")
-            app.input_note.config(text="...")
+            app.input_note.config(fg="white", text="...")
             return
         
-        if app.input_note.cget("text") == closest_note:
+        if app.input_note.cget("text") == closest_note and not is_new_note:
             return
         
-        app.input_note.config(text=closest_note)
         if target_notes[current_target_note_idx] == closest_note:
-            app.input_note.config(fg="green")
+            app.input_note.config(fg="green", text=closest_note)
             if is_random:
                 current_target_note_idx = get_random_list_idx(target_notes, current_target_note_idx)
             else:
                 current_target_note_idx = (current_target_note_idx + 1) % len(target_notes)
             app.target_note.config(text=target_notes[current_target_note_idx] if not has_alternate_names else alternate_names[current_target_note_idx])
         else:
-            app.input_note.config(fg="red")
-
+            if not is_new_note:
+                app.input_note.config(fg="red", text=closest_note)
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -218,7 +216,7 @@ class SettingsPage(tk.Frame):
         power_thresh_entry.insert(0, settings["power_thresh"])
         power_thresh_entry.grid(row=6, column=2, sticky=NE, pady=(0, 10))
 
-        power_thresh_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Tuning is activated if the signal power exceeds this threshold. Increase this value if the tuner is too sensitive, decrease if it is not sensitive enough."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
+        power_thresh_info_button = Button(self.container, text="?", bg="#252526", fg="white", width=1, height=1, command=lambda: messagebox.showinfo("Info", "Tuning is activated if the signal power exceeds this threshold. Increase this value if the input is too sensitive, decrease if it is not sensitive enough."), relief=FLAT, cursor="hand2", activebackground="#252526", activeforeground="white", bd=0)
         power_thresh_info_button.grid(row=6, column=3, sticky=NE, pady=(0, 10))
 
         concert_pitch_label = Label(self.container, text="Concert Pitch: ", bg="#252526", fg="white")
